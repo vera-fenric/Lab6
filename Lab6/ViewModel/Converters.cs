@@ -12,6 +12,8 @@ namespace ViewModel
         {
             if (value == null)
                 return null;
+            if (!(value is V2DataOnGrid))
+                return null;
             V2DataOnGrid g = (V2DataOnGrid)value;
             return "Max: " + g.Max + "; Min: " + g.Min;
         }
@@ -28,6 +30,8 @@ namespace ViewModel
         {
             if (value == null)
                 return null;
+            if (!(value is DataItem))
+                return null;
             DataItem d = (DataItem)value;
             return "Point: (" + d.Point.X + ", " + d.Point.Y + ");";
         }
@@ -42,6 +46,8 @@ namespace ViewModel
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
+                return null;
+            if (!(value is bool))
                 return null;
             bool b = (bool)value;
             if (b)
@@ -58,6 +64,8 @@ namespace ViewModel
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
+                return null;
+            if (!(value is DataItem))
                 return null;
             DataItem d = (DataItem)value;
             return "Value: " + d.Val.Real + "+" + d.Val.Imaginary + "i;";
@@ -92,7 +100,9 @@ namespace ViewModel
                 return null;
             AvgViewModel.CorrectResultViewModel avg = value as AvgViewModel.CorrectResultViewModel;
             if (avg == null)
-                return "";
+                return null;
+            if (avg.Value == -1)
+                return null;
             return $"Avg: {avg.Value}; ";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using ViewModel;
+using Lab3;
 
 namespace Tests
 {
@@ -12,17 +13,17 @@ namespace Tests
         {
             var vm = new MainViewModel();
             Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm._MyMainCollection);
+            Assert.IsNotNull(vm.MyMainCollection);
+            Assert.IsNotNull(vm.MyDataItemView);
             Assert.IsTrue(vm.Saved);
         }
-
         [TestMethod]
         public void NewTest()
         {
             var vm = new MainViewModel();
             vm.New();
             Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm._MyMainCollection);
+            Assert.IsNotNull(vm.MyMainCollection);
             Assert.IsTrue(vm.Saved);
         }
 
@@ -32,7 +33,7 @@ namespace Tests
             var vm = new MainViewModel();
             vm.Default();
             Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm._MyMainCollection);
+            Assert.IsNotNull(vm.MyMainCollection);
             Assert.IsFalse(vm.Saved);
         }
 
@@ -42,7 +43,7 @@ namespace Tests
             var vm = new MainViewModel();
             vm.Default_V2DataCollection();
             Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm._MyMainCollection);
+            Assert.IsNotNull(vm.MyMainCollection);
             Assert.IsFalse(vm.Saved);
         }
 
@@ -52,7 +53,7 @@ namespace Tests
             var vm = new MainViewModel();
             vm.Default_V2DataOnGrid();
             Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm._MyMainCollection);
+            Assert.IsNotNull(vm.MyMainCollection);
             Assert.IsFalse(vm.Saved);
         }
 
@@ -84,25 +85,33 @@ namespace Tests
             var s = vm.OpenFile("notopenfile.txt");
             Assert.IsNotNull((s as BoolViewModel.ErrorResultViewModel));
         }
-        /*
+        
         [TestMethod]
-        public void RemoveTest()
+        public void RemoveDCTest()
         {
             var vm = new MainViewModel();
             vm.Default();
-            var s = vm.Remove(???);
-            Assert.IsTrue(s);
+            var s = vm.Remove(new V2DataCollection("info 2", 4));
+            Assert.IsTrue((s as BoolViewModel.CorrectResultViewModel).Value);
         }
-        
+        [TestMethod]
+        public void RemoveDoGTest()
+        {
+            var vm = new MainViewModel();
+            vm.Default();
+            var s = vm.Remove(new V2DataOnGrid("info 2", 2, new Grid1D(0, 0), new Grid1D(0, 0)));
+            Assert.IsTrue((s as BoolViewModel.CorrectResultViewModel).Value);
+        }
+
         [TestMethod]
         public void InvalidRemoveTest()
         {
             var vm = new MainViewModel();
             vm.Default();
-            var s = vm.Remove(???);
-            Assert.IsFalse(s);
+            var s = vm.Remove(new V2DataCollection("info 1", 1));
+            //Assert.ThrowsException(vm.Remove(new V2DataCollection("info 1", 1)));
         }
-        */
+        
         
         [TestMethod]
         public void AddFromFileTest()
@@ -123,29 +132,30 @@ namespace Tests
             Assert.IsNotNull(s);
         }
 
-        /*
         [TestMethod]
-        public void MinMaxTest()
+        public void SetCurTest()
         {
             var vm = new MainViewModel();
-            vm.Default();
-            var min = vm.Min as AvgViewModel.CorrectResultViewModel;
-            var max = vm.Max as AvgViewModel.CorrectResultViewModel;
-            Assert.IsTrue(min != null);
-            Assert.IsTrue(max != null);
-            Assert.AreEqual(0.0, min, 1e-6);
-            Assert.AreEqual(5.0, max, 1e-6);
+            //vm.Default();
+            
+            var s = vm.SetCur(new V2DataCollection("info 1", 1)) as BoolViewModel.CorrectResultViewModel;
+            Assert.IsTrue(s.Value);
         }
         [TestMethod]
-        public void InvalidMinMaxTest()
+        public void InvalidSetCurTest()
         {
             var vm = new MainViewModel();
-            var min = vm.Min as AvgViewModel.ErrorResultViewModel;
-            var max = vm.Max as AvgViewModel.ErrorResultViewModel;
-            Assert.IsTrue(min != null);
-            Assert.IsTrue(max != null);
+            var s = vm.SetCur(null) as BoolViewModel.ErrorResultViewModel;
+            Assert.IsNotNull(s);
         }
-        */
+        [TestMethod]
+        public void InvalidAddTest()
+        {
+            var vm = new MainViewModel();
+            //vm.Default();
+            var s = vm.Add() as BoolViewModel.ErrorResultViewModel;
+            Assert.IsNotNull(s);
+        }
         [TestMethod]
         public void AvgTest()
         {

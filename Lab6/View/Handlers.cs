@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using ViewModel;
@@ -93,23 +94,20 @@ namespace View
             e.CanExecute = true;
             return;
         }
-
-        private void DeleteCommandHandler(object sender, ExecutedRoutedEventArgs e) { }
-        /*
         private void DeleteCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
                 CollectionViewSource view = TryFindResource("All_Collection_View") as CollectionViewSource;
-                V2Data v2_collection = view.View.CurrentItem as V2Data;
-                if (v2_collection != null)
-                    MyCollection.Remove(v2_collection.Info, v2_collection.Frequency);
+                var x = ViewModel.Remove(view.View.CurrentItem) as BoolViewModel.ErrorResultViewModel;
+                if (x!=null)
+                    MessageBox.Show(x.Error);
             }
             catch
             {
-                MessageBox.Show("Не удалось удалить элемент!", "Ошибка");
+                MessageBox.Show("Не удалось удалить элемент!");
             }
-        }*/
+        }
 
         //-------------------------------AddFromFile----------------------------
         private void Add_Element_from_File(object sender, RoutedEventArgs e)
@@ -131,8 +129,38 @@ namespace View
             }
         }
         //-----------------------------------Add------------------------------------
-        private void CanAddCommandHandler(object sender, CanExecuteRoutedEventArgs e) { }
-        private void AddCommandHandler(object sender, ExecutedRoutedEventArgs e) { }
+        private void CanAddCommandHandler(object sender, CanExecuteRoutedEventArgs e)
+        {
+            CollectionViewSource view = TryFindResource("V2DC_Collection_View") as CollectionViewSource;
+            if (view == null)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            if (view.View == null)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            if (view.View.CurrentItem == null)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            ViewModel.SetCur(view.View.CurrentItem);
+            if (Validation.GetHasError(TextBox_x) || Validation.GetHasError(TextBox_y) || Validation.GetHasError(TextBox_a) || Validation.GetHasError(TextBox_b))
+            {
+                e.CanExecute = false;
+                return;
+            }
+
+            e.CanExecute = true;
+        }
+        private void AddCommandHandler(object sender, ExecutedRoutedEventArgs e)
+        {
+            CollectionViewSource view = TryFindResource("V2DC_Collection_View") as CollectionViewSource;
+            ViewModel.Add();
+        }
 
     }
 }

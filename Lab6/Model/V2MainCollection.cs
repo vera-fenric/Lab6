@@ -23,20 +23,12 @@ namespace Lab3
         //открытое свойство булевского типа для информации о том, что пользователь внес изменения в коллекцию после сохранения в файле;
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-        private bool saved=false;
-        public bool Saved{
-            get { return saved; }
-            set { saved = value;
-                if (PropertyChanged!=null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Saved")); }
-        }
 
         public void Save(string filename)
         {
             FileStream fileStream = null;
             try
             {
-                Saved = true;
                 fileStream = File.Create(filename);
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                 binaryFormatter.Serialize(fileStream, l);
@@ -65,7 +57,6 @@ namespace Lab3
                 fileStream = File.OpenRead(filename);
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                 l = binaryFormatter.Deserialize(fileStream) as List<V2Data>;
-                Saved = true;
             }
             catch (Exception ex)
             {
@@ -77,7 +68,6 @@ namespace Lab3
                 if (fileStream != null) fileStream.Close();
                 if (CollectionChanged != null)
                     CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                Saved = true;
                 
             }
         }
@@ -86,7 +76,6 @@ namespace Lab3
 
         void CollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs args)
         {
-            Saved = false;
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Mid"));
 
             //if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(null));

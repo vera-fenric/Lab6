@@ -97,7 +97,7 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Name="Saved" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Path=Saved, Converter={StaticResource SavedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Name="Avg"  HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Path=Avg, Converter={StaticResource AvgConverter}, UpdateSourceTrigger=PropertyChanged}"/>
-           <!-- <TextBlock Name="MinMax" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding ElementName=ListBox_DataOnGrid, Path=SelectedItem, Converter={StaticResource MinMaxConverter}}"/>-->
+            <TextBlock Name="MinMax" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding ElementName=ListBox_DataOnGrid, Path=SelectedItem, Converter={StaticResource MinMaxConverter}}"/>
         </StackPanel>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>

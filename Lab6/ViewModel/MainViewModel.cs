@@ -16,6 +16,7 @@ namespace ViewModel
             set
             {
                 _MyMainCollection = value;
+                RaisePropertyChanged("Avg");
                 RaisePropertyChanged();
             }
         }
@@ -40,7 +41,7 @@ namespace ViewModel
         {
             MyMainCollection = new V2MainCollection();
             Saved = true;
-            RaisePropertyChanged("Avg");
+            //RaisePropertyChanged("Avg");
             return BoolViewModel.FromResult(true);
         }
         public BoolViewModel Default() {
@@ -128,7 +129,56 @@ namespace ViewModel
                 return BoolViewModel.FromError(ex.Message);
             }
         }
-        public BoolViewModel Remove() { throw new NotImplementedException(); }
+        public BoolViewModel Remove(object _obj)
+        {
+            try
+            {
+                V2Data obj = _obj as V2Data;
+                if (obj != null)
+                {
+                    MyMainCollection.Remove(obj.Info, obj.Frequency);
+                    RaisePropertyChanged("MyMainCollection");
+                    RaisePropertyChanged("Avg");
+                    return BoolViewModel.FromResult(true);
+                }
+                throw new Exception("Объект не был удалён!");
+            }
+            catch(Exception ex)
+            {
+                return BoolViewModel.FromError(ex.Message);
+            }
+        }
+
+        public BoolViewModel SetCur(object _obj)
+        {
+            try
+            {
+                if ((_obj as V2DataCollection) == null)
+                    throw new Exception("Null value");
+                MyDataItemView.col = _obj as V2DataCollection;
+                return BoolViewModel.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                return BoolViewModel.FromError(ex.Message);
+            }
+        }
+        public BoolViewModel Add()
+        {
+            try
+            {
+                MyDataItemView.AddDataItem();
+                MyDataItemView = new DataItemViewModel(null);
+                RaisePropertyChanged("MyMainCollection");
+                return BoolViewModel.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                return BoolViewModel.FromError(ex.Message);
+            }
+
+        }
+
         public BoolViewModel AddFromFile(string s)
         {
             try
