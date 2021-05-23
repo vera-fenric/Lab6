@@ -1,0 +1,9 @@
+C:\Users\verab\source\repos\Lab6\ViewModel\bin\Debug\ViewModel.dll
+C:\Users\verab\source\repos\Lab6\ViewModel\bin\Debug\ViewModel.pdb
+C:\Users\verab\source\repos\Lab6\ViewModel\bin\Debug\Lab3.dll
+C:\Users\verab\source\repos\Lab6\ViewModel\bin\Debug\Lab3.pdb
+C:\Users\verab\source\repos\Lab6\ViewModel\obj\Debug\ViewModel.csprojAssemblyReference.cache
+C:\Users\verab\source\repos\Lab6\ViewModel\obj\Debug\ViewModel.csproj.CoreCompileInputs.cache
+C:\Users\verab\source\repos\Lab6\ViewModel\obj\Debug\ViewModel.csproj.CopyComplete
+C:\Users\verab\source\repos\Lab6\ViewModel\obj\Debug\ViewModel.dll
+C:\Users\verab\source\repos\Lab6\ViewModel\obj\Debug\ViewModel.pdb

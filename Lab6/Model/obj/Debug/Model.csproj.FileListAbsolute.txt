@@ -1,0 +1,7 @@
+C:\Users\verab\source\repos\Lab6\Model\bin\Debug\Lab3.dll
+C:\Users\verab\source\repos\Lab6\Model\bin\Debug\Lab3.pdb
+C:\Users\verab\source\repos\Lab6\Model\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\verab\source\repos\Lab6\Model\obj\Debug\Model.csproj.CoreCompileInputs.cache
+C:\Users\verab\source\repos\Lab6\Model\obj\Debug\Model.csproj.CopyComplete
+C:\Users\verab\source\repos\Lab6\Model\obj\Debug\Lab3.dll
+C:\Users\verab\source\repos\Lab6\Model\obj\Debug\Lab3.pdb

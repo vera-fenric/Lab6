@@ -1,0 +1,114 @@
+﻿<Window x:Class="View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:View"
+        xmlns:ViewModel="clr-namespace:ViewModel;assembly=ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" Closing="Window_Closing" Closed="Window_Closed">
+
+    <!-- Ресурсы -->
+
+    <Window.Resources>
+        <CollectionViewSource Source="{Binding Path=MyMainCollection}" x:Key="All_Collection_View" />
+        <CollectionViewSource Source="{Binding Path=MyMainCollection}" x:Key="V2DC_Collection_View" Filter="V2DC_Collection_View_Filter"/>
+        <CollectionViewSource Source="{Binding Path=MyMainCollection}" x:Key="V2DoG_Collection_View" Filter="V2DoG_Collection_View_Filter"/>
+        <ViewModel:MinMaxConverter x:Key="MinMaxConverter"/>
+        <ViewModel:AvgConverter x:Key="AvgConverter"/>
+        <ViewModel:SavedConverter x:Key="SavedConverter"/>
+        <ViewModel:PointConverter x:Key="PointConverter"/>
+        <ViewModel:ComplexConverter x:Key="ComplexConverter"/>
+        <DataTemplate x:Key="DataCollectionTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding Converter={StaticResource PointConverter}}"/>
+                <TextBlock Text="{Binding Converter={StaticResource ComplexConverter}}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <!-- Команды -->
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.Save" CanExecute="CanSaveCommandHandler" Executed="SaveCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.Delete" CanExecute="CanDeleteCommandHandler" Executed="DeleteCommandHandler" />
+        <CommandBinding Command="{x:Static local:MainWindow.AddCommand}" CanExecute="CanAddCommandHandler" Executed="AddCommandHandler" />
+    </Window.CommandBindings>
+
+    <!-- Сетка -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25 px"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="30 px"></RowDefinition>
+            <RowDefinition Height="30 px"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" Height="25 px" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="New" Click="New"></MenuItem>
+                <MenuItem Header="Open" Command="ApplicationCommands.Open"></MenuItem>
+                <MenuItem Header="Save" Command="ApplicationCommands.Save"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Edit" >
+                <MenuItem Header="Add Defaults" Click="Add_Defaults"></MenuItem>
+                <MenuItem Header="Add Default V2DataCollection" Click="Add_Default_V2DataCollection"></MenuItem>
+                <MenuItem Header="Add Default V2DataOnGrid" Click="Add_Default_V2DataOnGrid"></MenuItem>
+                <MenuItem Header="Add Element from File" Click="Add_Element_from_File"></MenuItem>
+                <Separator />
+                <MenuItem Header="Remove" Command="ApplicationCommands.Delete"></MenuItem>
+                <MenuItem Header="Add DataItem" Command="{x:Static local:MainWindow.AddCommand}"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ListBox Grid.Column="0" Name="ListBox_Main" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource All_Collection_View}}" IsSynchronizedWithCurrentItem="true"/>
+            <ListBox Grid.Column="1" Name="ListBox_details" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding ElementName=ListBox_DataCollection, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource DataCollectionTemplate}}"/>
+            <ListBox Grid.Column="2" Name="ListBox_DataCollection" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource V2DC_Collection_View}}"/>
+            <ListBox Grid.Column="3" Name="ListBox_DataOnGrid" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource V2DoG_Collection_View}}"/>
+            <Grid Grid.Column="4" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Name="TextBlock_x" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text="Введите x:"/>
+                <TextBox Grid.Row="1" Name="TextBox_x" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text ="{Binding Path = MyDataItemView.XCoord, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors = true}"/>
+                <TextBlock Grid.Row="2" Name="TextBlock_y" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text="Введите y:"/>
+                <TextBox Grid.Row="3" Name="TextBox_y" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text ="{Binding Path = MyDataItemView.YCoord, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors = true}"/>
+                <TextBlock Grid.Row="4" Name="TextBlock_a" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text="Введите вещественную часть значения поля:"/>
+                <TextBox Grid.Row="5" Name="TextBox_a" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text ="{Binding Path = MyDataItemView.RealVal, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors = true}"/>
+                <TextBlock Grid.Row="6" Name="TextBlock_b" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text="Введите мнимую часть значения:"/>
+                <TextBox Grid.Row="7" Name="TextBox_b" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Text ="{Binding Path = MyDataItemView.ImVal, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors = true}"/>
+                <Button Grid.Row="8" Content="Add DataItem" Command="{x:Static local:MainWindow.AddCommand}" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch"/>
+            </Grid>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Name="Saved" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Path=Saved, Converter={StaticResource SavedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Name="Avg"  HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Path=Avg, Converter={StaticResource AvgConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+           <!-- <TextBlock Name="MinMax" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding ElementName=ListBox_DataOnGrid, Path=SelectedItem, Converter={StaticResource MinMaxConverter}}"/>-->
+        </StackPanel>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Content="Save" Command="ApplicationCommands.Save" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Grid.Column="0"/>
+            <Button Content="Open" Command="ApplicationCommands.Open" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Grid.Column="1"/>
+            <Button Content="Remove" Command="ApplicationCommands.Delete" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Grid.Column="2"/>
+        </Grid>
+    </Grid>
+    
+</Window>
