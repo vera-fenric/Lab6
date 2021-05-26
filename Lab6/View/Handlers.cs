@@ -16,149 +16,67 @@ namespace View
         //--------------------------Save----------------------------------
         private void CanSaveCommandHandler(object sender, CanExecuteRoutedEventArgs e)
         {
-            if ((ViewModel==null) || (ViewModel.Saved)) e.CanExecute = false;
-            else e.CanExecute = true;
+            //if (ViewModel != null)
+                e.CanExecute = ViewModel.CanSave();
         }
         private void SaveCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
-            if (Check()) return;
-            try
-            {
-                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-                dlg.FileName = "Collection";
-                dlg.DefaultExt = ".txt";
-                dlg.Filter = "Text documents|*.txt";
-                if (dlg.ShowDialog() == true)
-                {
-                    BoolViewModel.ErrorResultViewModel x = ViewModel.SaveToFile(dlg.FileName) as BoolViewModel.ErrorResultViewModel;
-                    if (x!=null)
-                        MessageBox.Show(x.Error);
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось сохранить коллекцию!");
-            }
+            ViewModel.Save();
         }
+
 
         //--------------------------Open----------------------------------
         private void OpenCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
-            if (Check()) return;
-            try
-            {
-                if (!ViewModel.Saved)
-                {
-                    MessageBoxResult mes = MessageBox.Show("Сохранить изменения?", " ", MessageBoxButton.YesNoCancel);
-                    if (mes == MessageBoxResult.Yes)
-                    {
-                        Microsoft.Win32.SaveFileDialog dlg_save = new Microsoft.Win32.SaveFileDialog();
-                        dlg_save.FileName = "Collection";
-                        dlg_save.DefaultExt = ".txt";
-                        dlg_save.Filter = "Text documents|*.txt";
-                        if (dlg_save.ShowDialog() == true)
-                        {
-                            BoolViewModel.ErrorResultViewModel x = ViewModel.SaveToFile(dlg_save.FileName) as BoolViewModel.ErrorResultViewModel;
-                            if (x != null)
-                                MessageBox.Show(x.Error);
-                        }
-                    }
-                    else if (mes == MessageBoxResult.Cancel)
-                    {
-                        return;
-                    }
-                }
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                if (dlg.ShowDialog() == true)
-                {
-                    BoolViewModel.ErrorResultViewModel x = ViewModel.OpenFile(dlg.FileName) as BoolViewModel.ErrorResultViewModel;
-                    if (x != null)
-                        MessageBox.Show(x.Error);
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось загрузить коллекцию!", "Ошибка");
-            }
+            ViewModel.Open();
         }
 
         //-----------------------------Delete---------------------
         private void CanDeleteCommandHandler(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = false;
-            if ((ViewModel == null)) return;
-            CollectionViewSource view = TryFindResource("All_Collection_View") as CollectionViewSource;
-            if (view == null) return;
-            if (view.View == null) return;
-            if (view.View.CurrentItem == null) return;
-            e.CanExecute = true;
-            return;
+            //if (ViewModel != null)
+                e.CanExecute = ViewModel.CanDelete();
         }
         private void DeleteCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                CollectionViewSource view = TryFindResource("All_Collection_View") as CollectionViewSource;
-                var x = ViewModel.Remove(view.View.CurrentItem) as BoolViewModel.ErrorResultViewModel;
-                if (x!=null)
-                    MessageBox.Show(x.Error);
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось удалить элемент!");
-            }
+            ViewModel.Remove();
         }
 
         //-------------------------------AddFromFile----------------------------
         private void Add_Element_from_File(object sender, RoutedEventArgs e)
         {
-            if (Check()) return;
+            ViewModel.AddFromFile();
+        }
+        //-----------------------------------Add------------------------------------
+
+        //Так как мы используем валидацию, я почти не трогала CanAdd
+        //Но по факту можно было в ViewModel.CanAdd() вставить функцию HasError из DataItemViewModel
+        //А в функцию HasError из DataItemViewModel практически скопировать текст проверки
+        //который мы писали для валидации, только вместо string возвращать bool
+        private void CanAddCommandHandler(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (ViewModel != null)
+                if (!(e.CanExecute = ViewModel.CanAdd()))
+                    return;
             try
             {
-                Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-                if (dialog.ShowDialog() == true)
+                if (Validation.GetHasError(TextBox_x) || Validation.GetHasError(TextBox_y) || Validation.GetHasError(TextBox_a) || Validation.GetHasError(TextBox_b))
                 {
-                    BoolViewModel.ErrorResultViewModel x = ViewModel.AddFromFile(dialog.FileName) as BoolViewModel.ErrorResultViewModel;
-                    if (x!=null)
-                        MessageBox.Show(x.Error);
+                    e.CanExecute = false;
+                    return;
                 }
+
+                e.CanExecute = true;
             }
             catch
             {
-                MessageBox.Show("Ошибка при чтении из файла!");
-            }
-        }
-        //-----------------------------------Add------------------------------------
-        private void CanAddCommandHandler(object sender, CanExecuteRoutedEventArgs e)
-        {
-            CollectionViewSource view = TryFindResource("V2DC_Collection_View") as CollectionViewSource;
-            if (view == null)
-            {
                 e.CanExecute = false;
                 return;
             }
-            if (view.View == null)
-            {
-                e.CanExecute = false;
-                return;
-            }
-            if (view.View.CurrentItem == null)
-            {
-                e.CanExecute = false;
-                return;
-            }
-            ViewModel.SetCur(view.View.CurrentItem);
-            if (Validation.GetHasError(TextBox_x) || Validation.GetHasError(TextBox_y) || Validation.GetHasError(TextBox_a) || Validation.GetHasError(TextBox_b))
-            {
-                e.CanExecute = false;
-                return;
-            }
-
-            e.CanExecute = true;
+            
         }
         private void AddCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
-            CollectionViewSource view = TryFindResource("V2DC_Collection_View") as CollectionViewSource;
             ViewModel.Add();
         }
 

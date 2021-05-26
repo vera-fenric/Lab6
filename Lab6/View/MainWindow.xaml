@@ -12,8 +12,8 @@
 
     <Window.Resources>
         <CollectionViewSource Source="{Binding Path=MyMainCollection}" x:Key="All_Collection_View" />
-        <CollectionViewSource Source="{Binding Path=MyMainCollection}" x:Key="V2DC_Collection_View" Filter="V2DC_Collection_View_Filter"/>
-        <CollectionViewSource Source="{Binding Path=MyMainCollection}" x:Key="V2DoG_Collection_View" Filter="V2DoG_Collection_View_Filter"/>
+        <CollectionViewSource Source="{Binding Path=MyDataCollection}" x:Key="V2DC_Collection_View"/>
+        <CollectionViewSource Source="{Binding Path=MyDataOnGrid}" x:Key="V2DoG_Collection_View"/>
         <ViewModel:MinMaxConverter x:Key="MinMaxConverter"/>
         <ViewModel:AvgConverter x:Key="AvgConverter"/>
         <ViewModel:SavedConverter x:Key="SavedConverter"/>
@@ -67,9 +67,9 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Column="0" Name="ListBox_Main" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource All_Collection_View}}" IsSynchronizedWithCurrentItem="true"/>
+            <ListBox Grid.Column="0" Name="ListBox_Main" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource All_Collection_View}}" IsSynchronizedWithCurrentItem="true"  SelectedItem="{Binding Path=CurrV2Data, Mode=OneWayToSource}"/>
             <ListBox Grid.Column="1" Name="ListBox_details" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding ElementName=ListBox_DataCollection, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource DataCollectionTemplate}}"/>
-            <ListBox Grid.Column="2" Name="ListBox_DataCollection" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource V2DC_Collection_View}}"/>
+            <ListBox Grid.Column="2" Name="ListBox_DataCollection" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource V2DC_Collection_View}}" IsSynchronizedWithCurrentItem="true" SelectedItem="{Binding Path=CurrV2DataCollection, Mode=OneWayToSource}"/>
             <ListBox Grid.Column="3" Name="ListBox_DataOnGrid" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" ItemsSource="{Binding Source={StaticResource V2DoG_Collection_View}}"/>
             <Grid Grid.Column="4" Margin="10">
                 <Grid.RowDefinitions>

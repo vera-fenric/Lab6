@@ -5,32 +5,37 @@ using Lab3;
 
 namespace Tests
 {
+    
     [TestClass]
     public class ViewModelTests
     {
+        
         [TestMethod]
         public void CreateTest()
         {
-            var vm = new MainViewModel();
-            Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm.MyMainCollection);
-            Assert.IsNotNull(vm.MyDataItemView);
-            Assert.IsTrue(vm.Saved);
+            var vm1 = new MainViewModel(new YesUIServices());
+            var vm2 = new MainViewModel(new NoUIServices());
+            var vm3 = new MainViewModel(new CancelUIServices());
+            Assert.IsNotNull(vm1);
+            Assert.IsTrue(vm1.Saved);
+            Assert.IsNotNull(vm2);
+            Assert.IsTrue(vm2.Saved);
+            Assert.IsNotNull(vm3);
+            Assert.IsTrue(vm3.Saved);
         }
         [TestMethod]
         public void NewTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.New();
             Assert.IsNotNull(vm);
-            Assert.IsNotNull(vm.MyMainCollection);
             Assert.IsTrue(vm.Saved);
         }
 
         [TestMethod]
         public void Default1Test()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default();
             Assert.IsNotNull(vm);
             Assert.IsNotNull(vm.MyMainCollection);
@@ -40,7 +45,7 @@ namespace Tests
         [TestMethod]
         public void Defautl2Test()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default_V2DataCollection();
             Assert.IsNotNull(vm);
             Assert.IsNotNull(vm.MyMainCollection);
@@ -50,7 +55,7 @@ namespace Tests
         [TestMethod]
         public void Defautl3Test()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default_V2DataOnGrid();
             Assert.IsNotNull(vm);
             Assert.IsNotNull(vm.MyMainCollection);
@@ -60,109 +65,124 @@ namespace Tests
         [TestMethod]
         public void SaveTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default();
-            var s = vm.SaveToFile("savefile.txt");
-            Assert.IsTrue((s as BoolViewModel.CorrectResultViewModel).Value);
+            vm.Save();
             Assert.IsTrue(vm.Saved);
+        }
+        [TestMethod]
+        [ExpectedException (typeof(NotImplementedException))]
+        public void FailSaveTest()
+        {
+            var vm = new MainViewModel(new NoUIServices());
+            //vm.Default();
+            vm.Open();
+            Assert.IsFalse(vm.Saved);
         }
 
         [TestMethod]
         public void OpenTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default();
-            var s = vm.OpenFile("openfile.txt");
-            Assert.IsTrue((s as BoolViewModel.CorrectResultViewModel).Value);
+            vm.Open();
             Assert.IsTrue(vm.Saved);
         }
 
         [TestMethod]
         public void NotOpenTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new CancelUIServices());
             vm.Default();
-            var s = vm.OpenFile("notopenfile.txt");
-            Assert.IsNotNull((s as BoolViewModel.ErrorResultViewModel));
+            vm.Open();
+            Assert.IsFalse(vm.Saved);
         }
         
         [TestMethod]
         public void RemoveDCTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new NoUIServices());
             vm.Default();
-            var s = vm.Remove(new V2DataCollection("info 2", 4));
-            Assert.IsTrue((s as BoolViewModel.CorrectResultViewModel).Value);
+            vm.CurrV2Data = new V2DataCollection("info 2", 4);
+            vm.Remove();
+        }
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void FailRemoveDCTest()
+        {
+            var vm = new MainViewModel(new CancelUIServices());
+            vm.Default();
+            vm.CurrV2Data = new V2DataCollection("info 2", 4);
+            vm.Remove();
+            vm.Remove();
         }
         [TestMethod]
         public void RemoveDoGTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new NoUIServices());
             vm.Default();
-            var s = vm.Remove(new V2DataOnGrid("info 2", 2, new Grid1D(0, 0), new Grid1D(0, 0)));
-            Assert.IsTrue((s as BoolViewModel.CorrectResultViewModel).Value);
+            vm.CurrV2Data = new V2DataOnGrid("info 2", 2, new Grid1D(0, 0), new Grid1D(0, 0));
+            vm.Remove();
         }
-
         [TestMethod]
-        public void InvalidRemoveTest()
+        [ExpectedException(typeof(NotImplementedException))]
+        public void FailRemoveDoGTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new CancelUIServices());
             vm.Default();
-            var s = vm.Remove(new V2DataCollection("info 1", 1));
-            //Assert.ThrowsException(vm.Remove(new V2DataCollection("info 1", 1)));
+            vm.CurrV2Data = new V2DataOnGrid("info 2", 2, new Grid1D(0, 0), new Grid1D(0, 0));
+            vm.Remove();
+            vm.Remove();
         }
         
-        
         [TestMethod]
-        public void AddFromFileTest()
+        public void FailFromFileTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default();
-            var s = vm.AddFromFile("AddFromFile.txt") as BoolViewModel.CorrectResultViewModel;
-            Assert.IsTrue(s.Value);
-            Assert.IsFalse(vm.Saved);
+            vm.Save();
+            vm.AddFromFile();
+            Assert.IsTrue(vm.Saved);
         }
 
         [TestMethod]
-        public void BadAddFromFileTest()
+        [ExpectedException (typeof(NotImplementedException))]
+        public void FailAddTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new CancelUIServices());
             vm.Default();
-            var s = vm.AddFromFile("BadAddFromFile.txt") as BoolViewModel.ErrorResultViewModel;
-            Assert.IsNotNull(s);
-        }
-
-        [TestMethod]
-        public void SetCurTest()
-        {
-            var vm = new MainViewModel();
-            //vm.Default();
-            
-            var s = vm.SetCur(new V2DataCollection("info 1", 1)) as BoolViewModel.CorrectResultViewModel;
-            Assert.IsTrue(s.Value);
-        }
-        [TestMethod]
-        public void InvalidSetCurTest()
-        {
-            var vm = new MainViewModel();
-            var s = vm.SetCur(null) as BoolViewModel.ErrorResultViewModel;
-            Assert.IsNotNull(s);
-        }
-        [TestMethod]
-        public void InvalidAddTest()
-        {
-            var vm = new MainViewModel();
-            //vm.Default();
-            var s = vm.Add() as BoolViewModel.ErrorResultViewModel;
-            Assert.IsNotNull(s);
+            vm.Add();
         }
         [TestMethod]
         public void AvgTest()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new YesUIServices());
             vm.Default();
             var avg = (vm.Avg as AvgViewModel.CorrectResultViewModel).Value;
             Assert.AreEqual(2.306019, avg, 1e-6);
+        }
+        [TestMethod]
+        public void CloseTest1()
+        {
+            var vm = new MainViewModel(new YesUIServices());
+            vm.Close();
+            Assert.IsTrue(vm.Saved);
+        }
+        [TestMethod]
+        public void CloseTest2()
+        {
+            var vm = new MainViewModel(new YesUIServices());
+            vm.Default();
+            vm.Close();
+            Assert.IsTrue(vm.Saved);
+        }
+        [TestMethod]
+        public void CloseTest3()
+        {
+            var vm = new MainViewModel(new NoUIServices());
+            vm.Default();
+            vm.Close();
+            Assert.IsFalse(vm.Saved);
         }
 
     }

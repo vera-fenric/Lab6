@@ -7,9 +7,27 @@ using Lab3;
 
 namespace ViewModel
 {
+
     public partial class MainViewModel : ViewModelBase
     {
+
         private V2MainCollection _MyMainCollection;
+        private V2Data _CurrV2Data;
+        private V2DataCollection _CurrV2DataCollection;
+        private DataItemViewModel _MyDataItemView;
+        private AvgViewModel _avg = AvgViewModel.FromError("Input is empty");
+        private bool _saved;
+
+        private readonly IUIServices UI;
+
+        public MainViewModel(IUIServices svc)
+        {
+            MyMainCollection = new V2MainCollection();
+            Saved = true;
+            MyDataItemView = new DataItemViewModel(null);
+            UI = svc;
+        }
+
         public V2MainCollection MyMainCollection
         {
             get => _MyMainCollection;
@@ -17,10 +35,25 @@ namespace ViewModel
             {
                 _MyMainCollection = value;
                 RaisePropertyChanged("Avg");
+                RaisePropertyChanged("MyDataCollection");
+                RaisePropertyChanged("MyDataOnGrid");
                 RaisePropertyChanged();
             }
         }
-        private DataItemViewModel _MyDataItemView;
+        public IEnumerable<V2DataCollection> MyDataCollection
+        {
+            get
+            {
+                return from col in MyMainCollection where col is V2DataCollection select col as V2DataCollection;
+            }
+        }
+        public IEnumerable<V2DataOnGrid> MyDataOnGrid
+        {
+            get
+            {
+                return from col in MyMainCollection where col is V2DataOnGrid select col as V2DataOnGrid;
+            }
+        }
         public DataItemViewModel MyDataItemView
         {
             get => _MyDataItemView;
@@ -30,176 +63,25 @@ namespace ViewModel
                 RaisePropertyChanged();
             }
         }
-        public MainViewModel()
+        public V2Data CurrV2Data
         {
-            MyMainCollection = new V2MainCollection();
-            //MainCollection.AddDefaults();
-            Saved = true;
-            MyDataItemView = new DataItemViewModel(null);
+            get => _CurrV2Data;
+            set
+            {
+                _CurrV2Data = value;
+                RaisePropertyChanged();
+            }
         }
-        public BoolViewModel New()
+        public V2DataCollection CurrV2DataCollection
         {
-            MyMainCollection = new V2MainCollection();
-            Saved = true;
-            //RaisePropertyChanged("Avg");
-            return BoolViewModel.FromResult(true);
-        }
-        public BoolViewModel Default() {
-            try
+            get => _CurrV2DataCollection;
+            set
             {
-                if (MyMainCollection == null)
-                {
-                    return BoolViewModel.FromError("Коллекция не создана!");
-                }
-                MyMainCollection.AddDefaults();
-                Saved = false;
-                RaisePropertyChanged("Avg");
-                RaisePropertyChanged("MyMainCollection");
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
+                _CurrV2DataCollection = value;
+                RaisePropertyChanged();
             }
         }
-        public BoolViewModel Default_V2DataCollection()
-        {
-            try
-            {
-                if (MyMainCollection == null)
-                {
-                    return BoolViewModel.FromError("Коллекция не создана!");
-                }
-                MyMainCollection.Add_Default_V2DataCollection();
-                Saved = false;
-                RaisePropertyChanged("Avg");
-                RaisePropertyChanged("MyMainCollection");
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-        public BoolViewModel Default_V2DataOnGrid()
-        {
-            try
-            {
-                if (MyMainCollection == null)
-                {
-                    return BoolViewModel.FromError("Коллекция не создана!");
-                }
-                MyMainCollection.Add_Default_V2DataOnGrid();
-                Saved = false;
-                RaisePropertyChanged("Avg");
-                RaisePropertyChanged("MyMainCollection");
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-        public BoolViewModel SaveToFile(string s)
-        {
-            try {
-                MyMainCollection.Save(s);
-                Saved = true;
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-        public BoolViewModel OpenFile(string s)
-        {
-            try
-            {
-                MyMainCollection.Load(s);
-                Saved = true;
-                RaisePropertyChanged("Avg");
-                RaisePropertyChanged("MyMainCollection");
-                if (MyMainCollection==null)
-                    return BoolViewModel.FromError("Ошибка при чтении из файла!");
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-        public BoolViewModel Remove(object _obj)
-        {
-            try
-            {
-                V2Data obj = _obj as V2Data;
-                if (obj != null)
-                {
-                    MyMainCollection.Remove(obj.Info, obj.Frequency);
-                    RaisePropertyChanged("MyMainCollection");
-                    RaisePropertyChanged("Avg");
-                    return BoolViewModel.FromResult(true);
-                }
-                throw new Exception("Объект не был удалён!");
-            }
-            catch(Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-
-        public BoolViewModel SetCur(object _obj)
-        {
-            try
-            {
-                if ((_obj as V2DataCollection) == null)
-                    throw new Exception("Null value");
-                MyDataItemView.col = _obj as V2DataCollection;
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-        public BoolViewModel Add()
-        {
-            try
-            {
-                MyDataItemView.AddDataItem();
-                MyDataItemView = new DataItemViewModel(null);
-                RaisePropertyChanged("MyMainCollection");
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-
-        }
-
-        public BoolViewModel AddFromFile(string s)
-        {
-            try
-            {
-                V2DataCollection c = new V2DataCollection(s);
-                MyMainCollection.Add(c);
-                RaisePropertyChanged("Avg");
-                RaisePropertyChanged("MyMainCollection");
-                return BoolViewModel.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                return BoolViewModel.FromError(ex.Message);
-            }
-        }
-
-        //private double _min;
-        //public double Min { get => _min; }
-        //private double _max;
-        //public double Max { get => _max; }
-        private AvgViewModel _avg = AvgViewModel.FromError("Input is empty");
+        
         public AvgViewModel Avg
         {
             get
@@ -216,7 +98,7 @@ namespace ViewModel
                 }
             }
          }
-        private bool _saved;
+
         public bool Saved
         {
             get => _saved;

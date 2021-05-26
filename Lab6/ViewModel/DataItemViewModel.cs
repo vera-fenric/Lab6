@@ -65,6 +65,7 @@ namespace ViewModel
             DataItem item = new DataItem(new Vector2(XCoord, YCoord), new Complex(RealVal, ImVal));
             col.Add(item);
         }
+
         public string Error { get { return "Error"; } }
         public string this[string property]
         {
@@ -72,10 +73,12 @@ namespace ViewModel
             get
             {
                 string msg = null;
+                
                 if (col == null)
                 {
                     return "Col is null";
                 }
+                
                 switch (property)
                 {
                     case "RealVal":

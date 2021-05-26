@@ -44,9 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoolViewModel.cs" />
+    <Compile Include="CanDoFunctions.cs" />
     <Compile Include="DataItemViewModel.cs" />
     <Compile Include="AvgViewModel.cs" />
-    <Compile Include="Filters.cs" />
+    <Compile Include="Functions.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
